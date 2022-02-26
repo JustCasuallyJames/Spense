@@ -1,23 +1,17 @@
 import './App.css';
 
+//Router
+import {BrowserRouter as Router, Routes, Route, BrowserRouter} from 'react-router-dom';
+import Dashboard from "./components/Dashboard.js";
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/:userID/dashboard" element={<Dashboard />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
