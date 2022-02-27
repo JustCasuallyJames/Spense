@@ -84,33 +84,14 @@
   color: #3AAF83;
 }
 
-@media only screen and (max-width: 520px) and (min-width: 376px) {
-  #graphic {
-    display: none;
-  }
-
-  #main {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 2em;
+@media only screen and (max-width: 990px) {
+  #login-form-container, #create-account {
+    width: 100%;
   }
 }
-@media only screen and (max-width: 375px) {
-  #graphic {
+@media only screen and (max-width: 776px) {
+  #animation {
     display: none;
-  }
-}
-@media only screen and (min-width: 768px) {
-  #main {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 2em;
   }
 }
 

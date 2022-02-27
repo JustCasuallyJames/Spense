@@ -46,7 +46,7 @@ const Register = () => {
         const usersRef = collection(db, "Users");
         
         setDoc(doc(usersRef, username), {
-            name: username,
+            username: username,
             nickname: nickname,
             groups: groups
         });
