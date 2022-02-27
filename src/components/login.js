@@ -89,8 +89,6 @@ const Login = () => {
                                     />
                                     <Form.Text style={{color: "red"}}>{loginStatus}</Form.Text>
                                 </Form.Group>
-
-
                                 <br></br>
                                 <br></br>
                                 <br></br>
