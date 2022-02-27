@@ -3,7 +3,6 @@
 import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GroupPreview from './GroupPreview';
-import Transactions from './Transactions';
 //firestore stuff
 import { updateDoc,setDoc, doc, getDoc, arrayUnion, arrayRemove, addDoc, collection } from "firebase/firestore";
 //graphics stuff
@@ -15,6 +14,7 @@ import '../styles/Dashboard.scss';
 import { Button, Col, Container, Row, Modal, Form } from "react-bootstrap";
 //database import
 import db from "../database";
+import Transactions from "./transactions";
 
 const Dashboard = (props) => {
 
@@ -29,6 +29,8 @@ const Dashboard = (props) => {
     const [showAdd, setshowAdd] = useState(true);
     const [showTransaction, setshowTransaction] = useState(false);
     const [transactions, setTransactions] = useState([]);
+
+    const [copied, setCopied] = useState("Copy Group ID");
 
     const [selectedGroupName, setselectedGroupName] = useState("");
     const [selectedGroup, setselectedGroup] = useState("");
@@ -51,7 +53,7 @@ const Dashboard = (props) => {
     const handleCloseNew = () => setshowNew(false);
     const handleShowNew = () => setshowNew(true);
 
-    const handleCloseJoin = () => setshowJoin(false);
+    const handleCloseJoin = () => {setshowJoin(false); setshowAdd(false)};
     const handleShowJoin = () => setshowJoin(true);
 
     let getUserGroups = () => {
@@ -65,13 +67,6 @@ const Dashboard = (props) => {
         // const docRef = doc(db, "Users", "elvis123");
         // const docSnap = await getDoc(docRef);
 
-        // if (docSnap.exists()) {
-        //     setnickname(docSnap.data().nickname);
-        //     setusername(docSnap.data().username);
-        //     return docSnap.data();
-        // }else{
-        //     console.log("doesn't exist");
-        // }
         setnickname(JSON.parse(localStorage.getItem("user")).nickname);
         setusername(JSON.parse(localStorage.getItem("user")).username);
     }
@@ -89,6 +84,7 @@ const Dashboard = (props) => {
     let addGroup = async () => {
         if(groupName !== "") {
             let randomID = generateGroupID(10);
+            
             let docSnap = await getDoc(doc(db, "GroupIDS", randomID));
 
             if (!docSnap.exists()) {
@@ -100,7 +96,7 @@ const Dashboard = (props) => {
                     name: groupName,
                     transactions: [],
                     users: [ nickname ],
-                    groupID: groupID
+                    groupID: randomID
 
                 };
                 await setDoc(doc(db, "Groups", randomID), data);
@@ -112,7 +108,9 @@ const Dashboard = (props) => {
                     localStorage.setItem('groups', [JSON.stringify(data)] );
                     setuserGroups([JSON.stringify(data)]);
                 }else{
+                    console.log("in here")
                     let tempGroupArray = JSON.parse(localStorage.getItem('groups'));
+                    console.log(tempGroupArray);
                     tempGroupArray.push(JSON.stringify(data));
                     setuserGroups(tempGroupArray);
                     //console.log(JSON.parse(JSON.stringify(tempGroupArray)));
@@ -142,7 +140,7 @@ const Dashboard = (props) => {
                     name: groupName,
                     transactions: [],
                     users: [ nickname ],
-                    groupID: groupID
+                    groupID: randomID
                 };
                 // sets the groupName as a field
                 await setDoc(doc(db, "Groups", randomID), data);
@@ -208,6 +206,7 @@ const Dashboard = (props) => {
             }else{
                  setLoginStatus("Group does not exist.");
             }
+            setshowTransaction(false);
         }
     }
     let handleSubmitNew = e => {
@@ -236,9 +235,17 @@ const Dashboard = (props) => {
 
     let showTransactions = (item) => {
         setselectedGroupName(JSON.parse(item).name);
-        setselectedGroup(item);
+
+        console.log(JSON.parse(item));
+        setselectedGroup(JSON.parse(item));
 
         setshowTransaction(true);
+    }
+
+    let copyLink = () => {
+        console.log(selectedGroup.groupID);
+        navigator.clipboard.writeText(selectedGroup.groupID);
+        setCopied("Copied!")
     }
 
     return (
@@ -246,8 +253,9 @@ const Dashboard = (props) => {
             
             {showTransaction && 
                 <div>
-                <span id="groupName" onClick={()=>{setshowTransaction(false)}}>&lt;- {selectedGroupName}</span>
-                <Transactions info={selectedGroup}>
+                <span id="groupName"><span onClick={()=>{setshowTransaction(false); setCopied("Copy Group ID")}}>&lt;- {selectedGroupName} </span><Button variant="primary" onClick={copyLink} style={{backgroundColor: "#3AAF83", border: "none"}}>{copied}</Button></span>
+                
+                <Transactions info={selectedGroup} user={nickname}>
 
                 </Transactions>
                 </div>

@@ -2,7 +2,7 @@ import { ReactComponent as Logo } from '../styles/graphics/spense.svg';
 // import { ReactComponent as LoginGraphic } from '../styles/graphics/login.svg';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 
-import { useNavigate } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 
 import { useState } from 'react';
 
@@ -15,7 +15,7 @@ import { collection, setDoc, doc } from "firebase/firestore";
 import db from '../database.js'
 
 const Register = () => {
-
+    let { groupID } = useParams();
     const [username, setUsername] = useState('');
     const [nickname, setNickname] = useState('');
     const [groups, setGroups] = useState([]);

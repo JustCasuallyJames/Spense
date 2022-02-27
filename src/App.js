@@ -4,6 +4,7 @@ import HomePage from './components/homepage';
 import Login from './components/login';
 import Register from './components/register';
 import Dashboard from './components/Dashboard';
+import Transactions from "./components/transactions";
 
 import 'bootstrap/dist/css/bootstrap.css';
 
