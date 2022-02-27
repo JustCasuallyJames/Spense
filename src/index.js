@@ -5,6 +5,8 @@ import './index.css';
 import App from './App';
 
 
+export default db;
+
 
 ReactDOM.render(
     <React.StrictMode>

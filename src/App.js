@@ -1,18 +1,24 @@
 import './App.css';
 
-//Router
-import {BrowserRouter as Router, Routes, Route, BrowserRouter} from 'react-router-dom';
+import HomePage from './components/homepage';
+import Login from './components/login';
+import Register from './components/register';
 import 'bootstrap/dist/css/bootstrap.css';
-import Dashboard from "./components/Dashboard.js";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/:userID/dashboard" element={<Dashboard />} />
-            </Routes>
-        </BrowserRouter>
-    );
+  return (
+      <Router>
+          <Routes>
+            <Route path="/"  element={<HomePage/>}/>
+            <Route path="/login" element={<Login/>}></Route>
+            <Route path="/register" element={<Register/>}></Route>
+            <Route path="/dashboard"></Route>
+          </Routes>
+      </Router>
+      
+  );
 }
 
 export default App;
