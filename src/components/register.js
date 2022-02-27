@@ -30,6 +30,10 @@ const Register = () => {
         navigate('/');
     }
 
+    let dashboard = () => {
+        navigate('/dashboard');
+    }
+
     const defaultOptions = {
         animationData: animate,
         loop: true,
@@ -43,14 +47,19 @@ const Register = () => {
                 nickname: ${nickname} \n
                 groups: ${groups}
         `);
-        const usersRef = collection(db, "Users");
-        
-        setDoc(doc(usersRef, username), {
+
+        const userObject = {
             username: username,
             nickname: nickname,
             groups: groups
-        });
+        }
 
+        const usersRef = collection(db, "Users");
+        
+        setDoc(doc(usersRef, username), userObject);
+
+
+        localStorage.setItem("user", JSON.stringify(userObject));
         // addDoc(collection(db, "Users", ), {
         //     name: username,
         //     nickname: nickname,
@@ -58,6 +67,7 @@ const Register = () => {
         // });
         setUsername("");
         setNickname("");
+        dashboard();
     };
 
     return (
@@ -77,6 +87,7 @@ const Register = () => {
                                         type="text"
                                         onChange={(e) => setUsername(e.target.value)}
                                         value={username}
+                                        required
                                     />
                                 </Form.Group>
 
@@ -86,6 +97,7 @@ const Register = () => {
                                         type="text"
                                         onChange={(e)=> setNickname(e.target.value)}
                                         value={nickname}
+                                        required
                                     />
                                 </Form.Group>
                                 <Button variant="primary" type="submit" id="loginPage-login">Register</Button>

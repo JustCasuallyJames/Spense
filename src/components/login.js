@@ -9,7 +9,7 @@ import animate from '../styles/graphics/Chatbot.json';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-import { doc, collection, getDoc } from "firebase/firestore";
+import { doc, collection, getDoc, getDocs } from "firebase/firestore";
 import db from '../database'
 
 import '../styles/login.scss';
@@ -44,12 +44,25 @@ const Login = () => {
         const docRef = doc(db, "Users", username);
         const docSnap = await getDoc(docRef);
 
-
         if (docSnap.exists()) {
             console.log(docSnap.data().Nickname);
             console.log(" exists!");
             console.log("Exists: ", docSnap.data());
             // return docSnap.data();
+
+            localStorage.setItem("user", JSON.stringify(docSnap.data()));
+            
+            const querySnapshot = await getDocs(collection(db, "Groups"));
+            var groupArray = [];
+            querySnapshot.forEach( (doc) => {
+                for(var i = 0 ; i < JSON.parse(localStorage.getItem("user")).groups.length ; i++){
+                    if(doc.id === JSON.parse(localStorage.getItem("user")).groups[i]){
+                        groupArray.push(JSON.stringify(doc.data()));
+                    }
+                }
+            });
+            localStorage.setItem("groups", groupArray);
+            console.log(JSON.parse(localStorage.getItem("user")).groups);
 
             setLoginStatus("");
             dashboard();
@@ -65,6 +78,7 @@ const Login = () => {
                 `);
         
         authenticateUser();
+        console.log(JSON.parse(localStorage.getItem("Data")));
         setUsername("");
     };
 
