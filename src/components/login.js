@@ -61,8 +61,9 @@ const Login = () => {
                     }
                 }
             });
-            localStorage.setItem("groups", groupArray);
-            console.log(JSON.parse(localStorage.getItem("user")).groups);
+            //console.log("json stringify:", JSON.stringify(groupArray));
+            localStorage.setItem("groups", JSON.stringify(groupArray));
+            //console.log(JSON.parse(localStorage.getItem("user")).groups);
 
             setLoginStatus("");
             dashboard();
@@ -78,7 +79,7 @@ const Login = () => {
                 `);
         
         authenticateUser();
-        console.log(JSON.parse(localStorage.getItem("Data")));
+        // console.log(JSON.parse(localStorage.getItem("Data")));
         setUsername("");
     };
 

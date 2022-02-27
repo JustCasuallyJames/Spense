@@ -23,7 +23,7 @@ const Dashboard = (props) => {
     const [showNew, setshowNew] = useState(false);
     const [showJoin, setshowJoin] = useState(false);
     const [loginStatus, setLoginStatus] = useState('');
-
+    const [userGroups, setuserGroups] = useState([]);
 
     let navigate = useNavigate();
 
@@ -42,7 +42,7 @@ const Dashboard = (props) => {
     const handleShowJoin = () => setshowJoin(true);
 
     let getUsername =  () => {
-        // //TODO: grab the username from localstorage when the register file is done
+        //TODO: grab the username from localstorage when the register file is done
         // const docRef = doc(db, "Users", "elvis123");
         // const docSnap = await getDoc(docRef);
 
@@ -53,8 +53,8 @@ const Dashboard = (props) => {
         // }else{
         //     console.log("doesn't exist");
         // }
-        setnickname(JSON.parse(localStorage.getItem("Data")).nickname);
-        setusername(JSON.parse(localStorage.getItem("Data")).username);
+        setnickname(JSON.parse(localStorage.getItem("user")).nickname);
+        setusername(JSON.parse(localStorage.getItem("user")).username);
     }
 
     let generateGroupID = (length) => {
@@ -76,13 +76,35 @@ const Dashboard = (props) => {
                 //add to the groupsID collection
                 await setDoc(doc(db, "GroupIDS", randomID), {}); //doesnt have data to store
                 const data = {
-                    name: groupName
+                    //TODO:add transactions[], users[]
+                    name: groupName,
+                    transactions: [],
+                    users: [ nickname ]
+
                 };
                 await setDoc(doc(db, "Groups", randomID), data);
                 //add to the users group array
                 await updateDoc(doc(db, "Users", username), {
                     groups: arrayUnion(randomID)
                 });
+                if(JSON.parse(localStorage.getItem('groups')).length === 0){
+                    localStorage.setItem('groups', [JSON.stringify(data)] );
+                    setuserGroups([JSON.stringify(data)]);
+                }else{
+                    let tempGroupArray = JSON.parse(localStorage.getItem('groups'));
+                    tempGroupArray.push(JSON.stringify(data));
+                    setuserGroups(tempGroupArray);
+                    //console.log(JSON.parse(JSON.stringify(tempGroupArray)));
+                    localStorage.setItem('groups', JSON.stringify(tempGroupArray))
+                    let temp = JSON.parse(localStorage.getItem('user')).groups;
+                    temp.push(randomID);
+                    localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: temp }))
+
+                    //TODO: AND ADDING GROUPS ID INTO USER GROUP ID ARRAY
+                    let tempIDArray = JSON.parse(localStorage.getItem('user')).groups.concat(groupID);
+                    localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: tempIDArray }))
+                }
+
 
             } else {
                 randomID = generateGroupID(10);
@@ -95,7 +117,9 @@ const Dashboard = (props) => {
                 //add to the groupsID collection
                 await setDoc(doc(db, "GroupIDS", randomID), {}); //doesnt have data to store
                 const data = {
-                    name: groupName
+                    name: groupName,
+                    transactions: [],
+                    users: [ nickname ]
                 };
                 // sets the groupName as a field
                 await setDoc(doc(db, "Groups", randomID), data);
@@ -103,6 +127,22 @@ const Dashboard = (props) => {
                 await updateDoc(doc(db, "Users", username), {
                     groups: arrayUnion(randomID)
                 });
+                if(JSON.parse(localStorage.getItem('groups')).length === 0){
+                    localStorage.setItem('groups', [JSON.stringify(data)] );
+                    setuserGroups([JSON.stringify(data)]);
+                }else{
+                    let tempGroupArray = JSON.parse(localStorage.getItem('groups'));
+                    tempGroupArray.push(JSON.stringify(data));
+                    setuserGroups(tempGroupArray);
+                    localStorage.setItem('groups', JSON.stringify(tempGroupArray))
+                    let temp = JSON.parse(localStorage.getItem('user')).groups;
+                    temp.push(randomID);
+                    localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: temp }))
+
+                    //TODO: AND ADDING GROUPS ID INTO USER GROUP ID ARRAY
+                    let tempIDArray = JSON.parse(localStorage.getItem('user')).groups.concat(groupID);
+                    localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: tempIDArray }))
+                }
             }
         }
     }
@@ -112,16 +152,54 @@ const Dashboard = (props) => {
             //tJNV8OldT0
             let docSnap = await getDoc(doc(db, "Groups", groupID));
 
-            console.log(docSnap.data());
+            //console.log(docSnap.data());
              if(docSnap.exists()){
                 //add to the users group array
-                console.log('entered into the if statement')
                 await updateDoc(doc(db, "Users", username), {
-                    Groups: arrayUnion(groupID)
+                    groups: arrayUnion(groupID)
                 });
+
+                await updateDoc(doc(db, 'Groups', groupID ), {
+                    users: arrayUnion(nickname)
+                });
+
+                //TODO: JOINING THE GROUPS USERS ARRAY (adding name to the users[])
+                 const joinedGroup = {
+                     name: docSnap.data().name,
+                     transactions: docSnap.data().transactions,
+                     users: docSnap.data().users.concat(nickname) //concat the nickname to the users array
+                 };
+                 let temp = JSON.parse(localStorage.getItem('groups'));
+                 temp.push(JSON.stringify(joinedGroup));
+                 localStorage.setItem('groups', JSON.stringify(temp));
+                 setuserGroups(temp);
+
+                 //TODO: AND ADDING GROUPS ID INTO USER GROUP ID ARRAY
+                let tempIDArray = JSON.parse(localStorage.getItem('user')).groups.concat(groupID);
+                localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: tempIDArray }))
+                 /*
+                 if(JSON.parse(localStorage.getItem('groups')).length === 0){
+                     localStorage.setItem('groups', [JSON.stringify(data)] );
+                     setuserGroups([JSON.stringify(data)]);
+                 }else{
+                     let tempGroupArray = JSON.parse(localStorage.getItem('groups'));
+                     tempGroupArray.push(JSON.stringify(data));
+                     setuserGroups(tempGroupArray);
+                     //console.log(JSON.parse(JSON.stringify(tempGroupArray)));
+                     localStorage.setItem('groups', JSON.stringify(tempGroupArray))
+                     let temp = JSON.parse(localStorage.getItem('user')).groups;
+                     temp.push(randomID);
+                     localStorage.setItem('user', JSON.stringify({name: nickname, username: username, groups: temp }))
+                 }
+                  */
+
+
+                 // doc.data().transactions.forEach( (transaction) => {
+                 //     transaction.
+                 // })
+
                 //setLoginStatus('');
             }else{
-                 console.log('enter into else statement');
                  setLoginStatus("Group does not exist.");
             }
         }
@@ -141,11 +219,9 @@ const Dashboard = (props) => {
         e.preventDefault();
         console.log("login status: ", {loginStatus})
         if(loginStatus === "Group does not exist."){
-           
-            handleCloseJoin();
-            // setgroupID("");
             setLoginStatus("Group does not exist.");
         }else{
+            handleCloseJoin();
             setLoginStatus("");
         }
 

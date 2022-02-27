@@ -58,7 +58,7 @@ const Register = () => {
         
         setDoc(doc(usersRef, username), userObject);
 
-
+        localStorage.setItem('groups', JSON.stringify([]));
         localStorage.setItem("user", JSON.stringify(userObject));
         // addDoc(collection(db, "Users", ), {
         //     name: username,
