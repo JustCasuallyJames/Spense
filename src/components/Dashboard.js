@@ -2,6 +2,8 @@
 //react stuff
 import { React, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import GroupPreview from './GroupPreview';
+import Transactions from './Transactions';
 //firestore stuff
 import { updateDoc,setDoc, doc, getDoc, arrayUnion, arrayRemove, addDoc, collection } from "firebase/firestore";
 //graphics stuff
@@ -24,6 +26,12 @@ const Dashboard = (props) => {
     const [showJoin, setshowJoin] = useState(false);
     const [loginStatus, setLoginStatus] = useState('');
     const [userGroups, setuserGroups] = useState([]);
+    const [showAdd, setshowAdd] = useState(true);
+    const [showTransaction, setshowTransaction] = useState(false);
+    const [transactions, setTransactions] = useState([]);
+
+    const [selectedGroupName, setselectedGroupName] = useState("");
+    const [selectedGroup, setselectedGroup] = useState("");
 
     let navigate = useNavigate();
 
@@ -31,8 +39,13 @@ const Dashboard = (props) => {
         navigate('/');
     }
 
+    let transaction = () => {
+        navigate('dashboard/transaction', {groupInfo: userGroups});
+    }
+
     useEffect( () => {
         getUsername();
+        getUserGroups();
     },[])
 
     const handleCloseNew = () => setshowNew(false);
@@ -41,6 +54,12 @@ const Dashboard = (props) => {
     const handleCloseJoin = () => setshowJoin(false);
     const handleShowJoin = () => setshowJoin(true);
 
+    let getUserGroups = () => {
+        setuserGroups(JSON.parse(localStorage.getItem('groups')));
+        if (JSON.parse(JSON.parse(localStorage.getItem('groups')).length != 0)) {
+            setshowAdd(false);
+        }
+    }
     let getUsername =  () => {
         //TODO: grab the username from localstorage when the register file is done
         // const docRef = doc(db, "Users", "elvis123");
@@ -105,6 +124,7 @@ const Dashboard = (props) => {
                     //TODO: AND ADDING GROUPS ID INTO USER GROUP ID ARRAY
                     let tempIDArray = JSON.parse(localStorage.getItem('user')).groups.concat(groupID);
                     localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: tempIDArray }))
+                
                 }
 
 
@@ -147,15 +167,17 @@ const Dashboard = (props) => {
                     localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: tempIDArray }))
                 }
             }
+            setshowAdd(false);
         }
     }
 
     let joinGroup = async () => {
+        console.log(joinGroup);
         if(joinGroup !== ""){
             //tJNV8OldT0
             let docSnap = await getDoc(doc(db, "Groups", groupID));
 
-            //console.log(docSnap.data());
+            console.log(docSnap.data());
              if(docSnap.exists()){
                 //add to the users group array
                 await updateDoc(doc(db, "Users", username), {
@@ -176,6 +198,7 @@ const Dashboard = (props) => {
                  let temp = JSON.parse(localStorage.getItem('groups'));
                  temp.push(JSON.stringify(joinedGroup));
                  localStorage.setItem('groups', JSON.stringify(temp));
+                 console.log("JOINED")
                  setuserGroups(temp);
 
                  //TODO: AND ADDING GROUPS ID INTO USER GROUP ID ARRAY
@@ -198,6 +221,7 @@ const Dashboard = (props) => {
         return loginStatus === "Group does not exist.";
     }
     let handleSubmitJoin = e => {
+
         joinGroup();
         e.preventDefault();
         console.log("login status: ", {loginStatus})
@@ -210,9 +234,27 @@ const Dashboard = (props) => {
 
     }
 
+    let showTransactions = (item) => {
+        setselectedGroupName(JSON.parse(item).name);
+        setselectedGroup(item);
+
+        setshowTransaction(true);
+    }
+
     return (
         <div id="background">
+            
+            {showTransaction && 
+                <div>
+                <span id="groupName" onClick={()=>{setshowTransaction(false)}}>&lt;- {selectedGroupName}</span>
+                <Transactions info={selectedGroup}>
+
+                </Transactions>
+                </div>
+            }
+
             <SpenseLogo id="logo" onClick={landing} />
+
             <Container fluid id="dashboard" >
                 <Row>
                     <Col><span id="welcome-text">Welcome Back, {nickname}!</span></Col>
@@ -222,13 +264,29 @@ const Dashboard = (props) => {
                     </Col>
                 </Row>
                 <br></br>
-                <Row >
+                
+                {showAdd && <Row >
                     <Col style={{ textAlign: "center" }}>
                         <AddGroup id="add-group-svg" />
                     </Col>
-
+                
                 </Row>
+                }
+                <Container fluid="xs" >
+                    <Row>
+                    {userGroups.map(function(item,index){
+                        let info = JSON.parse(item);
+                        return <Col xs={6} key={index} onClick={()=>{showTransactions(item)}}>
+                            <GroupPreview name={info.name} id={info.groupID}/>
+                        </Col>
+                    })}
+                    </Row>
+                </Container>
             </Container>
+            
+
+
+            
 
             <Modal show={showNew} onHide={handleCloseNew} size="lg" centered>
                 <Modal.Header closeButton style={{ borderBottom: "0 none" }}>
@@ -279,7 +337,7 @@ const Dashboard = (props) => {
                                         <Form.Control
                                             type="username"
                                             placeholder="ex: asdjiq8a10"
-                                            onChange={(e) => setgroupID(e.target.value.trim())}
+                                            onChange={(e) => setgroupID(e.target.value)}
                                             value={groupID}
                                             required
                                         />

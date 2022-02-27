@@ -1,0 +1,28 @@
+#group-container {
+  width: 100%;
+  height: 200px;
+  border-radius: 50px;
+  background-color: #FFFFFF;
+  color: #264653;
+  padding: 1em;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 44px;
+  /* identical to box height */
+  letter-spacing: 0.5px;
+  color: #264653;
+  margin-top: 50px;
+}
+
+#title {
+  text-align: left;
+}
+
+#copy-link {
+  float: right;
+  right: 0;
+}
+
+/*# sourceMappingURL=GroupPreview.css.map */

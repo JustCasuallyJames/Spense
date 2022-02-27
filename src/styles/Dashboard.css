@@ -12,7 +12,7 @@
 }
 
 #dashboard {
-  padding: 2em;
+  padding: 3em;
   width: 100%;
   max-width: 1920px;
 }
@@ -92,6 +92,18 @@
 .modal-content {
   border-radius: 50px !important;
   padding: 2em;
+}
+
+#groupName {
+  position: absolute;
+  z-index: 1;
+  top: 170px;
+  padding-left: 1em;
+  width: 100%;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
 }
 
 /*# sourceMappingURL=Dashboard.css.map */
