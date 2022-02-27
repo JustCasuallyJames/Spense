@@ -162,6 +162,7 @@ const Dashboard = (props) => {
                                         placeholder="ex: KBBQ Hangout"
                                         onChange={ (e) => setgroupName(e.target.value)}
                                         value={groupName}
+                                        required
                                     />
                                 </Form.Group>
                                 <Button variant="primary" type="submit">
