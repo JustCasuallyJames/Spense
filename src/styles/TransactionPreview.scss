@@ -1,0 +1,36 @@
+#group-container {
+    width: 100%;
+    // float: left;
+    height: 200px;
+    border-radius: 50px;
+    background-color: #FFFFFF;
+    color: #264653;
+    padding: 1.5em;
+
+    font-family: Inter;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    /* identical to box height */
+    letter-spacing: 0.5px;
+    color: #264653;
+    margin-top: 50px;
+}
+
+#title {
+    text-align: left;
+    font-size: 24px;
+}
+
+
+#dollar {
+    font-size: 50px;
+    color: #3AAF83;
+}
+
+#send-receive {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+}

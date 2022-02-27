@@ -66,7 +66,7 @@ const Login = () => {
             //console.log(JSON.parse(localStorage.getItem("user")).groups);
 
             setLoginStatus("");
-            dashboard();
+            dashboard(groupArray);
         } else {
             setLoginStatus("User Doesn't Exist");
         }
