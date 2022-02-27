@@ -74,12 +74,14 @@ const Dashboard = (props) => {
 
             if (!docSnap.exists()) {
                 //add to the groupsID collection
+                setgroupID(randomID);
                 await setDoc(doc(db, "GroupIDS", randomID), {}); //doesnt have data to store
                 const data = {
                     //TODO:add transactions[], users[]
                     name: groupName,
                     transactions: [],
-                    users: [ nickname ]
+                    users: [ nickname ],
+                    groupID: groupID
 
                 };
                 await setDoc(doc(db, "Groups", randomID), data);
@@ -113,13 +115,14 @@ const Dashboard = (props) => {
                     randomID = generateGroupID(10);
                     docSnap = getDoc(doc(db, "GroupIDS", randomID));
                 }
-
+                setgroupID(randomID);
                 //add to the groupsID collection
                 await setDoc(doc(db, "GroupIDS", randomID), {}); //doesnt have data to store
                 const data = {
                     name: groupName,
                     transactions: [],
-                    users: [ nickname ]
+                    users: [ nickname ],
+                    groupID: groupID
                 };
                 // sets the groupName as a field
                 await setDoc(doc(db, "Groups", randomID), data);
@@ -167,7 +170,8 @@ const Dashboard = (props) => {
                  const joinedGroup = {
                      name: docSnap.data().name,
                      transactions: docSnap.data().transactions,
-                     users: docSnap.data().users.concat(nickname) //concat the nickname to the users array
+                     users: docSnap.data().users.concat(nickname), //concat the nickname to the users array
+                     groupID: groupID
                  };
                  let temp = JSON.parse(localStorage.getItem('groups'));
                  temp.push(JSON.stringify(joinedGroup));
@@ -177,28 +181,7 @@ const Dashboard = (props) => {
                  //TODO: AND ADDING GROUPS ID INTO USER GROUP ID ARRAY
                 let tempIDArray = JSON.parse(localStorage.getItem('user')).groups.concat(groupID);
                 localStorage.setItem('user', JSON.stringify({nickname: nickname, username: username, groups: tempIDArray }))
-                 /*
-                 if(JSON.parse(localStorage.getItem('groups')).length === 0){
-                     localStorage.setItem('groups', [JSON.stringify(data)] );
-                     setuserGroups([JSON.stringify(data)]);
-                 }else{
-                     let tempGroupArray = JSON.parse(localStorage.getItem('groups'));
-                     tempGroupArray.push(JSON.stringify(data));
-                     setuserGroups(tempGroupArray);
-                     //console.log(JSON.parse(JSON.stringify(tempGroupArray)));
-                     localStorage.setItem('groups', JSON.stringify(tempGroupArray))
-                     let temp = JSON.parse(localStorage.getItem('user')).groups;
-                     temp.push(randomID);
-                     localStorage.setItem('user', JSON.stringify({name: nickname, username: username, groups: temp }))
-                 }
-                  */
 
-
-                 // doc.data().transactions.forEach( (transaction) => {
-                 //     transaction.
-                 // })
-
-                //setLoginStatus('');
             }else{
                  setLoginStatus("Group does not exist.");
             }
@@ -296,7 +279,7 @@ const Dashboard = (props) => {
                                         <Form.Control
                                             type="username"
                                             placeholder="ex: asdjiq8a10"
-                                            onChange={(e) => setgroupID(e.target.value)}
+                                            onChange={(e) => setgroupID(e.target.value.trim())}
                                             value={groupID}
                                             required
                                         />
