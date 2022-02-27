@@ -13,6 +13,7 @@ import '../styles/Dashboard.scss';
 import { Button, Col, Container, Row, Modal, Form } from "react-bootstrap";
 //database import
 import db from "../database";
+import Transactions from "./transactions";
 
 const Dashboard = (props) => {
 
@@ -31,6 +32,19 @@ const Dashboard = (props) => {
         navigate('/');
     }
 
+    // let transactions = () => {
+    //     let temp;
+    //     JSON.parse(localStorage.getItem('groups')).forEach( (group) => {
+    //         let groupTemp = JSON.parse(group);
+    //         //console.log({groupTemp});
+    //         if(groupTemp.groupID === ''){
+    //             temp = groupTemp.users;
+    //         }
+    //     });
+    //     console.log(temp);
+    //     navigate('/dashboard/transactions', { groupInfo: temp})
+    // }
+
     useEffect( () => {
         getUsername();
     },[])
@@ -46,13 +60,6 @@ const Dashboard = (props) => {
         // const docRef = doc(db, "Users", "elvis123");
         // const docSnap = await getDoc(docRef);
 
-        // if (docSnap.exists()) {
-        //     setnickname(docSnap.data().nickname);
-        //     setusername(docSnap.data().username);
-        //     return docSnap.data();
-        // }else{
-        //     console.log("doesn't exist");
-        // }
         setnickname(JSON.parse(localStorage.getItem("user")).nickname);
         setusername(JSON.parse(localStorage.getItem("user")).username);
     }
@@ -212,6 +219,9 @@ const Dashboard = (props) => {
 
     return (
         <div id="background">
+            <Transactions info={JSON.parse(JSON.parse(localStorage.getItem('groups'))[2])} user={nickname}>
+
+            </Transactions>
             <SpenseLogo id="logo" onClick={landing} />
             <Container fluid id="dashboard" >
                 <Row>
