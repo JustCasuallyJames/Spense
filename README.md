@@ -4,9 +4,9 @@ Spense allows for a quick and convenient way to split the bill. Instead of attem
 
 # Technologies
 
-ReactJS
-Google Firestore
-SASS
-React-Bootstrap
+ReactJS\n
+Google Firestore\n
+SASS\n
+React-Bootstrap\n
 
 
