@@ -7,6 +7,6 @@ Spense allows for a quick and convenient way to split the bill. Instead of attem
 ReactJS\
 Google Firestore\
 SASS\
-React-Bootstrap\
+React-Bootstrap
 
 
